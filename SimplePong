@@ -1,0 +1,137 @@
+import time
+import turtle
+
+
+wn = turtle.Screen()
+wn.title("Simple Pong")
+wn.bgcolor("green")
+wn.setup(width=800, height=600)
+wn.tracer(0)
+pad1 = turtle.Turtle()
+pad2 = turtle.Turtle()
+ball = turtle.Turtle()
+pad = [pad1, pad2, ball]
+score = [0, 0]
+
+
+# centerline
+def dLine(x, y):
+    line = turtle.Turtle()
+    line.speed(0)
+    line.shape("square")
+    line.shapesize(stretch_wid=3, stretch_len=0.5)
+    line.color("black")
+    line.penup()
+    line.goto(x, y)
+
+for i in range(-5, 5):
+    dLine(-4, i*100)
+
+
+for i in range(3):
+    pad[i] = turtle.Turtle()
+    pad[i].speed(0)
+    pad[i].shape("square")
+    pad[i].shapesize(stretch_wid=5, stretch_len=1)
+    pad[i].color("red")
+    pad[i].penup()
+
+# paddle 1
+pad[0].goto(-390, 0)
+
+# paddle 2
+pad[1].goto(380, 0)
+
+# Ball
+pad[2].shape("circle")
+pad[2].goto(0, 0)
+pad[2].shapesize(stretch_wid=1, stretch_len=1)
+speed = 0.5
+dx = speed
+dy = speed
+
+# pen
+pen = turtle.Turtle()
+pen.clear()
+pen.color("blue")
+pen.penup()
+pen.goto(0, 260)
+pen.write("Player A: " + str(score[0]) + "\t", align="right", font=("Ariel", 24, "bold"))
+pen.write("\tPlayer B: " + str(score[1]), align="left", font=("Ariel", 24, "bold"))
+
+
+# functions
+def pad1_up():
+    y = pad[0].ycor()
+    y += 20.0
+    pad[0].sety(y)
+
+
+def pad1_dn():
+    y = pad[0].ycor()
+    y -= 20.0
+    pad[0].sety(y)
+
+
+def pad2_up():
+    y = pad[1].ycor()
+    y += 20.0
+    pad[1].sety(y)
+
+
+def pad2_dn():
+    y = pad[1].ycor()
+    y -= 20.0
+    pad[1].sety(y)
+
+
+# keyboard inputs
+wn.listen()
+wn.onkeypress(pad1_up, "w")
+wn.onkeypress(pad1_dn, "s")
+wn.onkeypress(pad2_up, "Up")
+wn.onkeypress(pad2_dn, "Down")
+
+# Main gain loop
+while score[0] < 5 and score[1] < 5:
+    wn.update()
+
+    # Move the ball
+    pad[2].setx(pad[2].xcor() + dx)
+    pad[2].sety(pad[2].ycor() + dy)
+
+    # Border Checking
+    if pad[2].ycor() > 290:
+        dy = -speed
+    if pad[2].ycor() < -290:
+        dy = speed
+    if pad[2].xcor() > 390:
+        pad[2].goto(0, 0)
+        score[0] += 1
+        pen.clear()
+        pen.write("Player A: " + str(score[0]) + "\t", align="right", font=("Ariel", 24, "bold"))
+        pen.write("\tPlayer B: " + str(score[1]), align="left", font=("Ariel", 24, "bold"))
+        dx = -speed
+    if pad[2].xcor() < -390:
+        pad[2].goto(0, 0)
+        dx = speed
+        score[1] += 1
+        pen.clear()
+        pen.write("Player A: " + str(score[0]) + "\t", align="right", font=("Ariel", 24, "bold"))
+        pen.write("\tPlayer B: " + str(score[1]), align="left", font=("Ariel", 24, "bold"))
+    if (pad[0].ycor() - 50 < pad[2].ycor() < pad[0].ycor() + 50) and pad[2].xcor() < -370:
+        dx = speed
+    if (pad[1].ycor() - 50 < pad[2].ycor() < pad[1].ycor() + 50) and pad[2].xcor() > 360:
+        dx = -speed
+
+wn.update()
+wn.bgcolor("Red")
+pen2 = turtle.Turtle()
+pen2.color("Black")
+if score[0] > score[1]:
+    winner = "A"
+else:
+    winner = "B"
+pen2.write("Game Over\n", align="Center", font=("Georgia", 50, "bold"))
+pen2.write(" \nPlayer " + winner + " Wins", align="Center", font=("Georgia", 30, "bold"))
+time.sleep(5)
