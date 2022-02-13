@@ -1,0 +1,91 @@
+import time
+import turtle
+import random
+
+wn = turtle.Screen()
+wn.title("Simple Pong")
+wn.bgcolor("green")
+wn.setup(width=800, height=600)
+wn.tracer(0)
+pad1 = turtle.Turtle()
+pad2 = turtle.Turtle()
+ball = turtle.Turtle()
+pad = [pad1, pad2, ball]
+score = [0, 0]
+
+
+for i in range(3):
+    pad[i] = turtle.Turtle()
+    pad[i].speed(0)
+    pad[i].shape("square")
+    pad[i].shapesize(stretch_wid=5, stretch_len=1)
+    pad[i].color("red")
+    pad[i].penup()
+
+# paddle 1
+pad[0].goto(-390, 0)
+
+# paddle 2
+pad[1].goto(380, 0)
+
+# Ball
+pad[2].shape("circle")
+pad[2].goto(0, 0)
+pad[2].shapesize(stretch_wid=1, stretch_len=1)
+speed = 1
+dx = speed
+dy = speed
+
+# pen
+pen = turtle.Turtle()
+pen.clear()
+pen.color("blue")
+pen.penup()
+pen.goto(0, 260)
+pen.write("Player A: " + str(score[0]) + "\t", align="right", font=("Ariel", 24, "bold"))
+pen.write("\tPlayer B: " + str(score[1]), align="left", font=("Ariel", 24, "bold"))
+
+
+# keyboard inputs
+
+# Main gain loop
+while score[0] < 5 and score[1] < 5:
+    wn.update()
+    ran = random.randint(0, 10)
+
+    # Move the ball
+    pad[2].setx(pad[2].xcor() + dx)
+    pad[2].sety(pad[2].ycor() + dy)
+
+    # Border Checking
+    if pad[2].ycor() > 290:
+        dy = -speed
+    if pad[2].ycor() < -290:
+        dy = speed
+    if dx == -speed and pad[2].xcor() < -100:
+        if pad[0].ycor() - pad[2].ycor() < ran:
+            pad[0].sety(pad[0].ycor() + speed)
+        if pad[0].ycor() - pad[2].ycor() > ran:
+            pad[0].sety(pad[0].ycor() - speed)
+    if dx == speed and pad[2].xcor() > 100:
+        if pad[1].ycor() - pad[2].ycor() < ran:
+            pad[1].sety(pad[1].ycor() + speed)
+        if pad[1].ycor() - pad[2].ycor() > ran:
+            pad[1].sety(pad[1].ycor() - speed)
+    if (pad[0].ycor() - 50 < pad[2].ycor() < pad[0].ycor() + 50) and pad[2].xcor() < -370:
+        dx = speed
+    if (pad[1].ycor() - 50 < pad[2].ycor() < pad[1].ycor() + 50) and pad[2].xcor() > 360:
+        dx = -speed
+
+
+wn.update()
+wn.bgcolor("Red")
+pen2 = turtle.Turtle()
+pen2.color("Black")
+if score[0] > score[1]:
+    winner = "A"
+else:
+    winner = "B"
+pen2.write("Game Over\n", align="Center", font=("Georgia", 50, "bold"))
+pen2.write(" \nPlayer " + winner + " Wins", align="Center", font=("Georgia", 30, "bold"))
+time.sleep(5)
